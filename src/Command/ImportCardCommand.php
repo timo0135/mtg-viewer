@@ -7,6 +7,7 @@ use App\Entity\Card;
 use App\Repository\ArtistRepository;
 use App\Repository\CardRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,6 +25,7 @@ class ImportCardCommand extends Command
     public function __construct(
         private readonly CardRepository         $cardRepository,
         private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface        $logger,
         private array                           $csvHeader = []
     )
     {
@@ -37,6 +39,7 @@ class ImportCardCommand extends Command
         $filepath = __DIR__ . '/../../data/cards.csv';
         $handle = fopen($filepath, 'r');
 
+        $this->logger->info('Importing cards from ' . $filepath);
         if ($handle === false) {
             $io->error('File not found');
             return Command::FAILURE;
