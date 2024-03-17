@@ -7,7 +7,7 @@ Pour l'ensemble de l'exercice, pensez à:
 
 De plus, vous devrez notez dans un documents les choix fait en fonction des problématiques rencontrées, la manière d'avoir trouvé la solution (benchmark, etc.) et eventuellement les design pattern utilisés.
 
-## 1. Complétion de l'import
+## 0. Complétion de l'import
 La commande d'import de carte est déjà implémentée, mais n'est pas entierrement fonctionnelle.  
 Dans un premier temps, essayer d'importer 10,000 cartes, puis 30,000 cartes.
 Si vous rencontrez des lenteurs, prenez le temps de les analyser et de les corriger.  
@@ -15,6 +15,9 @@ Si vous rencontrez des lenteurs, prenez le temps de les analyser et de les corri
 Aide qui peut être utile:
 - [Il est possible d'utiliser le symfony profiler avec une commande](https://symfony.com/doc/current/console.html#profiling-commands)
 - Pour accéder au profiler: [http://localhost/_profiler](http://localhost/_profiler) (adapter l'URL si besoin)
+
+## 1. Ajout de logs sur les appel API
+Pour chaque appel API, ajouter un log dans le fichier `var/log/api.log`.
 
 ## 2. Ajouter la recherche de carte
 Si vous parcourez le site, vous verez le listing de toutes les cartes, et l'affichage d'une carte en particulier.  

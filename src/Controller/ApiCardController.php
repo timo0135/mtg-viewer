@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Artist;
 use App\Entity\Card;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Attributes as OA;
@@ -16,6 +17,7 @@ class ApiCardController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger
     ) {
     }
     #[Route('/all', name: 'List all cards', methods: ['GET'])]
