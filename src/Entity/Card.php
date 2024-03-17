@@ -26,7 +26,7 @@ class Card implements \JsonSerializable
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $rarity = null;
 
-    #[ORM\Column(type: Types::GUID)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $uuid = null;
 
     #[ORM\Column(length: 255, nullable: true)]
