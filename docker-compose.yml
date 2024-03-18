@@ -28,7 +28,8 @@ services:
       MARIADB_DATABASE: ${DB_DATABASE:-database}
       MARIADB_USER: ${DB_USERNAME:-user}
       MARIADB_PASSWORD: ${DB_PASSWORD:-password}
-
+    volumes:
+        - db-data:/var/lib/mysql
   vite:
     image: node:20-alpine
     volumes:
@@ -37,3 +38,6 @@ services:
     ports:
         - "${VITE_SERVER_PORT:-3000}:3000"
     command: npm run dev
+
+volumes:
+    db-data:
