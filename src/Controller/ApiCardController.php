@@ -20,27 +20,12 @@ class ApiCardController extends AbstractController
         private readonly LoggerInterface $logger
     ) {
     }
-
     #[Route('/all', name: 'List all cards', methods: ['GET'])]
     #[OA\Put(description: 'Return all cards in the database')]
     #[OA\Response(response: 200, description: 'List all cards')]
     public function cardAll(): Response
     {
-        $this->logger->info('Starting to list all cards');
-        $startTime = microtime(true);
-
-        try {
-            $cards = $this->entityManager->getRepository(Card::class)->findAll();
-            $this->logger->info('Successfully listed all cards');
-        } catch (\Exception $e) {
-            $this->logger->error('Error listing all cards: ' . $e->getMessage());
-            return $this->json(['error' => 'An error occurred while listing cards'], 500);
-        }
-
-        $endTime = microtime(true);
-        $duration = $endTime - $startTime;
-        $this->logger->info('Finished listing all cards', ['duration' => $duration]);
-
+        $cards = $this->entityManager->getRepository(Card::class)->findAll();
         return $this->json($cards);
     }
 
@@ -51,25 +36,10 @@ class ApiCardController extends AbstractController
     #[OA\Response(response: 404, description: 'Card not found')]
     public function cardShow(string $uuid): Response
     {
-        $this->logger->info('Starting to show card', ['uuid' => $uuid]);
-        $startTime = microtime(true);
-
-        try {
-            $card = $this->entityManager->getRepository(Card::class)->findOneBy(['uuid' => $uuid]);
-            if (!$card) {
-                $this->logger->warning('Card not found', ['uuid' => $uuid]);
-                return $this->json(['error' => 'Card not found'], 404);
-            }
-            $this->logger->info('Successfully found card', ['uuid' => $uuid]);
-        } catch (\Exception $e) {
-            $this->logger->error('Error showing card: ' . $e->getMessage(), ['uuid' => $uuid]);
-            return $this->json(['error' => 'An error occurred while showing the card'], 500);
+        $card = $this->entityManager->getRepository(Card::class)->findOneBy(['uuid' => $uuid]);
+        if (!$card) {
+            return $this->json(['error' => 'Card not found'], 404);
         }
-
-        $endTime = microtime(true);
-        $duration = $endTime - $startTime;
-        $this->logger->info('Finished showing card', ['uuid' => $uuid, 'duration' => $duration]);
-
         return $this->json($card);
     }
 }
