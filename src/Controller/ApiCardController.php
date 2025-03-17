@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Artist;
 use App\Entity\Card;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Request;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -23,15 +23,22 @@ class ApiCardController extends AbstractController
     }
 
     #[Route('/all', name: 'List all cards', methods: ['GET'])]
+    #[OA\Parameter(name: 'page', description: 'Page number', in: 'query', required: false, schema: new OA\Schema(type: 'integer'))]
+    #[OA\Parameter(name: 'limit', description: 'Limit of cards per page', in: 'query', required: false, schema: new OA\Schema(type: 'integer'))]
     #[OA\Put(description: 'Return all cards in the database')]
     #[OA\Response(response: 200, description: 'List all cards')]
-    public function cardAll(): Response
+    public function cardAll(Request $request): Response
     {
         $this->logger->info('Starting to list all cards');
         $startTime = microtime(true);
 
+        $page = $request->query->getInt('page', 1);
+        $limit = $request->query->getInt('limit', 100);
+        $offset = ($page - 1) * $limit;
+
         try {
-            $cards = $this->entityManager->getRepository(Card::class)->findAll();
+            $cards = $this->entityManager->getRepository(Card::class)->findBy([], null, $limit, $offset);
+            $totalCards = $this->entityManager->getRepository(Card::class)->count([]);
             $this->logger->info('Successfully listed all cards');
         } catch (\Exception $e) {
             $this->logger->error('Error listing all cards: ' . $e->getMessage());
@@ -42,7 +49,12 @@ class ApiCardController extends AbstractController
         $duration = $endTime - $startTime;
         $this->logger->info('Finished listing all cards', ['duration' => $duration]);
 
-        return $this->json($cards);
+        return $this->json([
+            'cards' => $cards,
+            'total' => $totalCards,
+            'page' => $page,
+            'limit' => $limit,
+        ]);
     }
 
     #[Route('/search', name: 'Search cards', methods: ['GET'])]
